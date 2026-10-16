@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Interaktif PAI Kelas 3 - Materi Puasa</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Fredoka', 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 50%, #fef3c7 100%);
+            min-height: 100vh;
+        }
+
+        .font-poppins {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Custom Islamic Pattern Overlay */
+        .bg-pattern {
+            background-color: #ffffff;
+            background-image: radial-gradient(#10b981 0.75px, transparent 0.75px), radial-gradient(#f59e0b 0.75px, #ffffff 0.75px);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            background-opacity: 0.15;
+        }
+
+        /* Card Animations */
+        .card-enter {
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.8) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .pulse-btn {
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4); }
+            50% { transform: scale(1.03); box-shadow: 0 15px 30px -5px rgba(16, 185, 129, 0.6); }
+        }
+
+        /* Print styles for certificate */
+        @media print {
+            body { background: white !important; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            .shadow-custom { box-shadow: none !important; border: 2px solid #ccc !important; }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen text-slate-800 antialiased relative selection:bg-emerald-200">
+
+    <!-- Top Header Bar -->
+    <header class="w-full bg-emerald-600 text-white shadow-md py-3 px-4 sm:px-8 flex justify-between items-center sticky top-0 z-40">
+        <div class="flex items-center space-x-3">
+            <div class="bg-amber-400 text-emerald-900 w-10 h-10 rounded-full flex items-center justify-center text-xl shadow">
+                <i class="fa-solid font-bold fa-moon"></i>
+            </div>
+            <div>
+                <h1 class="text-lg sm:text-xl font-bold tracking-wide">Kuis PAI Kelas 3</h1>
+                <p class="text-xs text-emerald-100 font-poppins">Materi: Indahnya Berpuasa Ramadan</p>
+            </div>
+        </div>
+        
+        <!-- Audio Control Toggle -->
+        <button id="soundToggleBtn" onclick="toggleSound()" class="bg-emerald-700 hover:bg-emerald-800 text-white px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium flex items-center space-x-2 transition shadow">
+            <i id="soundIcon" class="fa-solid fa-volume-high text-amber-300"></i>
+            <span id="soundText" class="hidden sm:inline">Suara: On</span>
+        </button>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-6 max-w-3xl flex flex-col justify-center">
+
+        <!-- ================= SCREEN 1: IDENTITAS (NAMA & KELAS) ================= -->
+        <section id="screenIdentitas" class="card-enter bg-white/95 backdrop-blur rounded-3xl p-6 sm:p-10 shadow-xl border-4 border-emerald-400 bg-pattern text-center relative overflow-hidden">
+            <!-- Decorative Badge -->
+            <div class="inline-block bg-amber-100 text-amber-800 font-semibold px-4 py-1.5 rounded-full text-sm mb-4 border border-amber-300 shadow-sm">
+                ✨ Pendidikan Agama Islam & Budi Pekerti
+            </div>
+
+            <div class="mb-6">
+                <div class="w-24 h-24 bg-gradient-to-tr from-emerald-500 to-teal-400 text-white rounded-full mx-auto flex items-center justify-center text-4xl shadow-lg mb-3">
+                    🕌
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-emerald-700">Uji Pengetahuan Puasa!</h2>
+                <p class="text-slate-600 font-poppins text-sm mt-1">Mari belajar pengertian, syarat wajib, rukun, pembatal, dan hikmah puasa.</p>
+            </div>
+
+            <!-- Form Identitas Siswa -->
+            <form onsubmit="mulaiKuis(event)" class="space-y-4 max-w-md mx-auto font-poppins text-left bg-emerald-50/80 p-5 rounded-2xl border border-emerald-200">
+                <div>
+                    <label for="inputNama" class="block text-sm font-bold text-emerald-900 mb-1">
+                        <i class="fa-solid fa-user text-emerald-600 mr-1"></i> Nama Lengkap Siswa:
+                    </label>
+                    <input type="text" id="inputNama" required placeholder="Contoh: Ahmad Fauzi" class="w-full px-4 py-3 rounded-xl border-2 border-emerald-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-slate-800 font-medium transition">
+                </div>
+
+                <div>
+                    <label for="inputKelas" class="block text-sm font-bold text-emerald-900 mb-1">
+                        <i class="fa-solid fa-graduation-cap text-emerald-600 mr-1"></i> Kelas:
+                    </label>
+                    <select id="inputKelas" required class="w-full px-4 py-3 rounded-xl border-2 border-emerald-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-slate-800 font-medium transition bg-white">
+                        <option value="">-- Pilih Kelas --</option>
+                        <option value="Kelas 3 A">Kelas 3 A</option>
+                        <option value="Kelas 3 B">Kelas 3 B</option>
+                        <option value="Kelas 3 C">Kelas 3 C</option>
+                        <option value="Kelas 3 D">Kelas 3 D</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="pulse-btn w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-lg py-3.5 px-6 rounded-xl shadow-lg transition transform active:scale-95 flex items-center justify-center space-x-2 mt-4">
+                    <span>Mulai Kuis Sekarang</span>
+                    <i class="fa-solid fa-circle-play"></i>
+                </button>
+            </form>
+
+            <p class="text-xs text-slate-400 font-poppins mt-4">
+                💡 Terdapat 10 soal pilihan ganda. Dengarkan suara saat menjawab!
+            </p>
+        </section>
+
+
+        <!-- ================= SCREEN 2: TAMPILAN KUIS ================= -->
+        <section id="screenKuis" class="hidden card-enter bg-white rounded-3xl p-5 sm:p-8 shadow-xl border-4 border-emerald-400 relative">
+            
+            <!-- Info Bar (Siswa, Progress & Skor) -->
+            <div class="flex flex-wrap justify-between items-center bg-emerald-50 p-3 sm:p-4 rounded-2xl border border-emerald-200 mb-6 gap-2">
+                <div>
+                    <span id="displayNamaKuis" class="font-bold text-emerald-800 text-sm sm:text-base block">Siswa</span>
+                    <span id="displayKelasKuis" class="text-xs text-emerald-600 font-poppins font-medium">Kelas</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-xs sm:text-sm font-bold border border-amber-300">
+                        ⭐ Skor: <span id="skorLive">0</span>
+                    </div>
+                    <div class="bg-emerald-600 text-white px-3 py-1 rounded-full text-xs sm:text-sm font-bold">
+                        Soal <span id="noSoalAktif">1</span>/10
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-200 rounded-full h-3 mb-6 overflow-hidden">
+                <div id="progressBar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-3 rounded-full transition-all duration-500" style="width: 10%"></div>
+            </div>
+
+            <!-- Kategori Topik Badge -->
+            <div class="mb-3">
+                <span id="kategoriBadge" class="bg-teal-100 text-teal-800 text-xs font-bold px-3 py-1 rounded-lg border border-teal-200 uppercase tracking-wider">
+                    Pengertian Puasa
+                </span>
+            </div>
+
+            <!-- Teks Pertanyaan -->
+            <h3 id="teksPertanyaan" class="text-lg sm:text-xl font-bold text-slate-800 leading-snug mb-6 min-h-[60px]">
+                Pertanyaan akan muncul di sini...
+            </h3>
+
+            <!-- Pilihan Jawaban (A, B, C, D) -->
+            <div id="containerOpsi" class="grid grid-cols-1 gap-3 font-poppins mb-6">
+                <!-- Opsi di-generate secara dinamis via JS -->
+            </div>
+
+            <!-- Panel Umpan Balik (Penjelasan Saat Menjawab) -->
+            <div id="feedbackBox" class="hidden p-4 rounded-2xl mb-4 text-sm transition-all card-enter">
+                <div class="flex items-center space-x-2 font-bold text-base mb-1" id="feedbackTitle">
+                    <!-- Title & Icon -->
+                </div>
+                <p id="feedbackDesc" class="text-slate-700 font-poppins text-xs sm:text-sm"></p>
+            </div>
+
+            <!-- Tombol Lanjut -->
+            <div class="flex justify-end">
+                <button id="btnLanjut" onclick="soalBerikutnya()" disabled class="bg-slate-300 text-slate-500 font-bold px-6 py-3 rounded-xl shadow cursor-not-allowed transition flex items-center space-x-2">
+                    <span>Soal Berikutnya</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+
+        <!-- ================= SCREEN 3: HASIL & SERTIFIKAT ================= -->
+        <section id="screenHasil" class="hidden card-enter bg-white rounded-3xl p-6 sm:p-10 shadow-2xl border-4 border-amber-400 bg-pattern text-center relative overflow-hidden">
+            
+            <!-- Confetti Header Icon -->
+            <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full mx-auto flex items-center justify-center text-4xl shadow-inner mb-4">
+                🏆
+            </div>
+
+            <h2 class="text-2xl sm:text-3xl font-bold text-emerald-800 mb-1">Hasil Kuis PAI</h2>
+            <p class="text-xs sm:text-sm text-slate-500 font-poppins mb-6">Selamat telah menyelesaikan Kuis Materi Puasa Ramadan!</p>
+
+            <!-- Card Sertifikat Ringkas -->
+            <div class="bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-300 rounded-2xl p-6 mb-6 shadow-sm text-left max-w-md mx-auto font-poppins">
+                <div class="border-b border-emerald-200 pb-3 mb-3 text-center">
+                    <p class="text-xs uppercase tracking-wider text-emerald-600 font-semibold">Laporan Hasil Belajar</p>
+                    <h3 id="hasilNama" class="text-xl font-bold text-slate-800 mt-1">-</h3>
+                    <p id="hasilKelas" class="text-sm font-medium text-emerald-700">-</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 text-center my-4">
+                    <div class="bg-white p-3 rounded-xl border border-emerald-100 shadow-sm">
+                        <span class="text-xs text-slate-500 block">Nilai Akhir</span>
+                        <span id="hasilNilai" class="text-3xl font-bold text-emerald-600">0</span>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl border border-emerald-100 shadow-sm">
+                        <span class="text-xs text-slate-500 block">Benar / Total</span>
+                        <span id="hasilBenar" class="text-3xl font-bold text-amber-500">0 / 10</span>
+                    </div>
+                </div>
+
+                <!-- Bintang Evaluasi -->
+                <div id="starContainer" class="text-amber-400 text-2xl text-center my-2">
+                    ★★★★★
+                </div>
+
+                <p id="pesanMotivasi" class="text-xs sm:text-sm text-slate-700 text-center italic bg-white p-3 rounded-lg border border-emerald-100 mt-3">
+                    "Semangat terus belajar agama Islam!"
+                </p>
+            </div>
+
+            <!-- Tombol Aksi -->
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-3 no-print">
+                <button onclick="cetakHasil()" class="w-full sm:w-auto bg-slate-700 hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl shadow transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Cetak / Simpan Hasil</span>
+                </button>
+                <button onclick="ulangKuis()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl shadow transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Coba Kuis Lagi</span>
+                </button>
+            </div>
+
+            <!-- Pembahasan Ringkas Soal -->
+            <div class="mt-8 text-left font-poppins border-t border-slate-200 pt-6">
+                <h4 class="font-bold text-slate-800 mb-3 flex items-center text-sm sm:text-base">
+                    <i class="fa-solid fa-list-check text-emerald-600 mr-2"></i> Review Jawaban Kamu:
+                </h4>
+                <div id="reviewList" class="space-y-2 text-xs sm:text-sm max-h-60 overflow-y-auto pr-2">
+                    <!-- Dynamic review list -->
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-500 font-poppins no-print">
+        Kuis Interaktif PAI SD Kelas 3 • Ibadah Puasa Ramadan
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // ================= DATABASE 10 SOAL PAI KELAS 3 =================
+        const bankSoal = [
+            {
+                kategori: "📖 Pengertian Bahasa",
+                pertanyaan: "Secara bahasa (etimologi), kata puasa atau \"shaum\" berasal dari bahasa Arab yang artinya adalah...",
+                opsi: [
+                    "Menahan diri",
+                    "Makan dan minum",
+                    "Membaca doa bersama",
+                    "Tidur di siang hari"
+                ],
+                jawabanBenar: 0,
+                penjelasan: "Secara bahasa, puasa (shaum) artinya adalah 'menahan diri' dari segala sesuatu."
+            },
+            {
+                kategori: "📖 Pengertian Istilah",
+                pertanyaan: "Menurut ajaran Islam, ibadah puasa adalah menahan diri dari lapar, dahaga, dan hal yang membatalkan puasa mulai dari...",
+                opsi: [
+                    "Terbit matahari sampai tengah malam",
+                    "Jam 06.00 pagi sampai jam 18.00 sore",
+                    "Terbit fajar (Subuh) sampai terbenam matahari (Maghrib)",
+                    "Waktu Isya sampai waktu Subuh"
+                ],
+                jawabanBenar: 2,
+                penjelasan: "Puasa dilaksanakan dari terbit fajar shadiq (waktu Subuh) hingga terbenamnya matahari (waktu Maghrib)."
+            },
+            {
+                kategori: "📋 Syarat Wajib Puasa",
+                pertanyaan: "Syarat wajib puasa adalah hal yang membuat seseorang wajib berpuasa. Salah satu syarat wajib puasa adalah...",
+                opsi: [
+                    "Memiliki harta yang sangat banyak",
+                    "Berakal sehat dan mampu berpuasa",
+                    "Memiliki sepeda baru",
+                    "Sudah tamat sekolah dasar"
+                ],
+                jawabanBenar: 1,
+                penjelasan: "Syarat wajib puasa antara lain: beragama Islam, baligh, berakal sehat, serta mampu/sehat untuk berpuasa."
+            },
+            {
+                kategori: "📋 Syarat Wajib Puasa",
+                pertanyaan: "Anak yang sudah mumayyiz diwajibkan belajar berpuasa. Mumayyiz artinya anak yang sudah dapat...",
+                opsi: [
+                    "Membedakan perbuatan baik dan buruk",
+                    "Membeli barang yang mahal",
+                    "Mengendarai sepeda motor sendiri",
+                    "Menulis cerita yang sangat panjang"
+                ],
+                jawabanBenar: 0,
+                penjelasan: "Mumayyiz adalah tingkatan usia anak yang sudah dapat membedakan mana yang baik dan mana yang buruk."
+            },
+            {
+                kategori: "🕌 Rukun Puasa",
+                pertanyaan: "Rukun puasa adalah hal yang harus dilakukan saat berpuasa. Rukun puasa yang pertama adalah...",
+                opsi: [
+                    "Mandi keramas pada sore hari",
+                    "Tidur seharian di dalam kamar",
+                    "Membeli makanan takjil yang banyak",
+                    "Niat puasa di malam hari sebelum fajar"
+                ],
+                jawabanBenar: 3,
+                penjelasan: "Rukun puasa ada dua: 1. Niat pada malam hari sebelum fajar, 2. Menahan diri dari hal yang membatalkan puasa."
+            },
+            {
+                kategori: "🕌 Rukun Puasa",
+                pertanyaan: "Rukun puasa yang kedua adalah menahan diri dari segala yang membatalkan puasa sejak waktu Subuh hingga...",
+                opsi: [
+                    "Waktu Dzuhur tiba",
+                    "Terbenamnya matahari (Waktu Maghrib)",
+                    "Jam 12.00 siang tepat",
+                    "Matahari terbit di pagi hari"
+                ],
+                jawabanBenar: 1,
+                penjelasan: "Rukun kedua adalah menahan diri dari pembatal puasa sampai waktu Maghrib tiba."
+            },
+            {
+                kategori: "❌ Hal Membatalkan Puasa",
+                pertanyaan: "Di bawah ini adalah perbuatan yang dapat MEMBATALKAN puasa jika dilakukan secara sengaja, yaitu...",
+                opsi: [
+                    "Makan dan minum dengan sengaja",
+                    "Wudhu dan berkumur secukupnya",
+                    "Tidur siang sejenak untuk istirahat",
+                    "Mandi sore agar badan segar"
+                ],
+                jawabanBenar: 0,
+                penjelasan: "Makan dan minum secara sengaja di siang hari puasa hukumnya membatalkan puasa."
+            },
+            {
+                kategori: "❌ Hal Membatalkan Puasa",
+                pertanyaan: "Ahmad sedang berpuasa, lalu ia tidak sengaja minum air karena benar-benar LUPA. Bagaimana hukum puasa Ahmad?",
+                opsi: [
+                    "Puasanya langsung batal saat itu juga",
+                    "Harus membayar denda yang mahal",
+                    "Puasanya tetap sah dan wajib dilanjutkan",
+                    "Mendapatkan dosa karena tidak teliti"
+                ],
+                jawabanBenar: 2,
+                penjelasan: "Jika makan atau minum karena benar-benar LUPA, puasanya tidak batal dan tetap sah dilanjutkan (merupakan rezeki dari Allah)."
+            },
+            {
+                kategori: "✨ Hikmah Puasa",
+                pertanyaan: "Ibadah puasa Ramadan memiliki banyak hikmah. Hikmah utama puasa bagi pembentukan akhlak kita adalah melatih...",
+                opsi: [
+                    "Sifat sombong dan suka marah",
+                    "Kesabaran, kejujuran, dan kedisiplinan",
+                    "Kebiasaan boros dan jajan sembarangan",
+                    "Sifat malas belajar dan bekerja"
+                ],
+                jawabanBenar: 1,
+                penjelasan: "Hikmah berpuasa mendidik kita menjadi orang yang sabar, jujur, disiplin, dan bertaqwa kepada Allah SWT."
+            },
+            {
+                kategori: "✨ Hikmah Puasa",
+                pertanyaan: "Saat berpuasa kita merasakan lapar dan haus. Hal ini mengajarkan kita hikmah sosial untuk tumbuh rasa...",
+                opsi: [
+                    "Kasih sayang dan kepedulian terhadap fakir miskin",
+                    "Sifat pamer makanan kepada teman",
+                    "Keinginan untuk bermalas-malasan",
+                    "Prasangka buruk kepada orang lain"
+                ],
+                jawabanBenar: 0,
+                penjelasan: "Menahan lapar dan haus menumbuhkan rasa empati dan kasih sayang kepada fakir miskin yang sering kelaparan."
+            }
+        ];
+
+        // State Aplikasi
+        let namaSiswa = "";
+        let kelasSiswa = "";
+        let indeksSoal = 0;
+        let skor = 0;
+        let isMuted = false;
+        let riwayatJawaban = [];
+        let sudahMenjawab = false;
+
+        // Web Audio Context
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Toggle Sound Mute
+        function toggleSound() {
+            isMuted = !isMuted;
+            const soundIcon = document.getElementById('soundIcon');
+            const soundText = document.getElementById('soundText');
+            
+            if (isMuted) {
+                soundIcon.className = "fa-solid fa-volume-xmark text-slate-300";
+                soundText.innerText = "Suara: Off";
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            } else {
+                soundIcon.className = "fa-solid fa-volume-high text-amber-300";
+                soundText.innerText = "Suara: On";
+            }
+        }
+
+        // Speech Synthesis Helper (Pengucapan Suara)
+        function speakText(text) {
+            if (isMuted || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel(); // Stop ucapan sebelumnya
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'id-ID';
+            utterance.rate = 1.0;
+            utterance.pitch = 1.2; // Suara agak tinggi ramah anak
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Web Audio API Synthesizer: Suara Tepuk Tangan & Chime (Benar)
+        function playTepukTangan() {
+            if (isMuted) return;
+            initAudio();
+            const ctx = audioCtx;
+            
+            // 1. Sintesis suara tepuk tangan (Noise burst)
+            const duration = 1.2;
+            const bufferSize = ctx.sampleRate * duration;
+            const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = Math.random() * 2 - 1;
+            }
+
+            const noise = ctx.createBufferSource();
+            noise.buffer = buffer;
+
+            const filter = ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(1100, ctx.currentTime);
+            filter.Q.setValueAtTime(1.0, ctx.currentTime);
+
+            const gain = ctx.createGain();
+            const now = ctx.currentTime;
+            gain.gain.setValueAtTime(0, now);
+
+            for (let t = 0; t < 1.0; t += 0.08) {
+                const clapTime = now + t + (Math.random() * 0.02);
+                gain.gain.setValueAtTime(0.5, clapTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, clapTime + 0.04);
+            }
+
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(ctx.destination);
+            noise.start(now);
+
+            // 2. Nada gembira Arpeggio (Chime)
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+            notes.forEach((freq, idx) => {
+                const osc = ctx.createOscillator();
+                const noteGain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, ctx.currentTime);
+                
+                const startTime = ctx.currentTime + (idx * 0.07);
+                noteGain.gain.setValueAtTime(0.2, startTime);
+                noteGain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.3);
+
+                osc.connect(noteGain);
+                noteGain.connect(ctx.destination);
+                osc.start(startTime);
+                osc.stop(startTime + 0.3);
+            });
+        }
+
+        // Web Audio API Synthesizer: Suara Buzzer (Salah)
+        function playSuaraSalah() {
+            if (isMuted) return;
+            initAudio();
+            const ctx = audioCtx;
+            const now = ctx.currentTime;
+
+            const osc1 = ctx.createOscillator();
+            const osc2 = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc1.type = 'sawtooth';
+            osc2.type = 'sawtooth';
+
+            osc1.frequency.setValueAtTime(160, now);
+            osc2.frequency.setValueAtTime(120, now);
+
+            osc1.frequency.linearRampToValueAtTime(110, now + 0.35);
+            osc2.frequency.linearRampToValueAtTime(80, now + 0.35);
+
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc1.start(now);
+            osc2.start(now);
+            osc1.stop(now + 0.35);
+            osc2.stop(now + 0.35);
+        }
+
+        // ================= FLOW KUIS =================
+
+        // 1. Mulai Kuis (Submit Identitas)
+        function mulaiKuis(event) {
+            event.preventDefault();
+            initAudio();
+
+            namaSiswa = document.getElementById('inputNama').value.trim();
+            kelasSiswa = document.getElementById('inputKelas').value;
+
+            if (!namaSiswa || !kelasSiswa) return;
+
+            document.getElementById('displayNamaKuis').innerText = namaSiswa;
+            document.getElementById('displayKelasKuis').innerText = kelasSiswa;
+
+            // Transisi Screen
+            document.getElementById('screenIdentitas').classList.add('hidden');
+            document.getElementById('screenKuis').classList.remove('hidden');
+
+            indeksSoal = 0;
+            skor = 0;
+            riwayatJawaban = [];
+            
+            tampilkanSoal();
+        }
+
+        // 2. Tampilkan Soal Aktif
+        function tampilkanSoal() {
+            sudahMenjawab = false;
+            const soalData = bankSoal[indeksSoal];
+
+            // Reset UI
+            document.getElementById('noSoalAktif').innerText = indeksSoal + 1;
+            document.getElementById('skorLive').innerText = skor;
+            document.getElementById('kategoriBadge').innerText = soalData.kategori;
+            document.getElementById('teksPertanyaan').innerText = soalData.pertanyaan;
+
+            // Update Progress Bar
+            const persenProgress = ((indeksSoal + 1) / bankSoal.length) * 100;
+            document.getElementById('progressBar').style.width = `${persenProgress}%`;
+
+            // Sembunyikan Feedback & Disable Tombol Lanjut
+            const feedbackBox = document.getElementById('feedbackBox');
+            feedbackBox.className = "hidden p-4 rounded-2xl mb-4 text-sm transition-all";
+            
+            const btnLanjut = document.getElementById('btnLanjut');
+            btnLanjut.disabled = true;
+            btnLanjut.className = "bg-slate-300 text-slate-500 font-bold px-6 py-3 rounded-xl shadow cursor-not-allowed transition flex items-center space-x-2";
+
+            // Generate Opsi Jawaban
+            const containerOpsi = document.getElementById('containerOpsi');
+            containerOpsi.innerHTML = "";
+
+            const huruf = ['A', 'B', 'C', 'D'];
+
+            soalData.opsi.forEach((teksOpsi, idx) => {
+                const button = document.createElement('button');
+                button.type = "button";
+                button.onclick = () => pilihJawaban(idx);
+                button.id = `opsi-${idx}`;
+                button.className = "group w-full p-4 rounded-2xl border-2 border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/50 transition-all text-left flex items-center justify-between font-medium text-slate-700 shadow-sm active:scale-[0.99]";
+
+                button.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="w-8 h-8 rounded-xl bg-slate-100 group-hover:bg-emerald-500 group-hover:text-white text-slate-600 font-bold text-sm flex items-center justify-center transition">
+                            ${huruf[idx]}
+                        </span>
+                        <span class="text-sm sm:text-base">${teksOpsi}</span>
+                    </div>
+                    <i class="fa-regular fa-circle text-slate-300 group-hover:text-emerald-500 text-lg icon-check"></i>
+                `;
+
+                containerOpsi.appendChild(button);
+            });
+        }
+
+        // 3. Eksekusi Pilih Jawaban
+        function pilihJawaban(indeksDipilih) {
+            if (sudahMenjawab) return;
+            sudahMenjawab = true;
+
+            const soalData = bankSoal[indeksSoal];
+            const isBenar = (indeksDipilih === soalData.jawabanBenar);
+
+            // Matikan semua tombol opsi
+            for (let i = 0; i < soalData.opsi.length; i++) {
+                const btn = document.getElementById(`opsi-${i}`);
+                btn.disabled = true;
+                btn.classList.add('cursor-default');
+            }
+
+            const btnDipilih = document.getElementById(`opsi-${indeksDipilih}`);
+            const feedbackBox = document.getElementById('feedbackBox');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackDesc = document.getElementById('feedbackDesc');
+
+            if (isBenar) {
+                // Jawaban BENAR
+                skor += 10;
+                document.getElementById('skorLive').innerText = skor;
+
+                btnDipilih.className = "w-full p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-100 text-emerald-900 font-bold text-left flex items-center justify-between shadow-md";
+                btnDipilih.querySelector('.icon-check').className = "fa-solid fa-circle-check text-emerald-600 text-xl";
+
+                feedbackBox.className = "p-4 rounded-2xl mb-4 bg-emerald-100 border border-emerald-300 text-emerald-900 card-enter";
+                feedbackTitle.innerHTML = `<i class="fa-solid fa-face-laugh-beam text-emerald-600 text-xl"></i> <span>Yey, Benar !!! 🎉</span>`;
+                feedbackDesc.innerText = soalData.penjelasan;
+
+                // Suara & Efek Tepuk Tangan + Ucapan Yey Benar
+                playTepukTangan();
+                speakText("Yey, benar !!!");
+
+                // Confetti Efek
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 50,
+                        spread: 60,
+                        origin: { y: 0.7 }
+                    });
+                }
+            } else {
+                // Jawaban SALAH
+                btnDipilih.className = "w-full p-4 rounded-2xl border-2 border-rose-400 bg-rose-100 text-rose-900 font-bold text-left flex items-center justify-between shadow-md";
+                btnDipilih.querySelector('.icon-check').className = "fa-solid fa-circle-xmark text-rose-600 text-xl";
+
+                // Highlight Jawaban yang Seharusnya Benar
+                const btnKunci = document.getElementById(`opsi-${soalData.jawabanBenar}`);
+                btnKunci.className = "w-full p-4 rounded-2xl border-2 border-emerald-400 bg-emerald-50 text-emerald-900 font-semibold text-left flex items-center justify-between";
+                btnKunci.querySelector('.icon-check').className = "fa-solid fa-check text-emerald-600 text-lg";
+
+                feedbackBox.className = "p-4 rounded-2xl mb-4 bg-rose-100 border border-rose-300 text-rose-900 card-enter";
+                feedbackTitle.innerHTML = `<i class="fa-solid fa-face-frown text-rose-600 text-xl"></i> <span>Salah! ❌</span>`;
+                feedbackDesc.innerText = `Jawaban kurang tepat. ${soalData.penjelasan}`;
+
+                // Suara Buzzer & Ucapan Salah
+                playSuaraSalah();
+                speakText("Salah!");
+            }
+
+            // Simpan Riwayat
+            riwayatJawaban.push({
+                soal: soalData.pertanyaan,
+                jawabanSiswa: soalData.opsi[indeksDipilih],
+                jawabanBenar: soalData.opsi[soalData.jawabanBenar],
+                isBenar: isBenar
+            });
+
+            // Aktifkan Tombol Lanjut
+            feedbackBox.classList.remove('hidden');
+            const btnLanjut = document.getElementById('btnLanjut');
+            btnLanjut.disabled = false;
+            btnLanjut.className = "bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl shadow-lg transition flex items-center space-x-2 transform active:scale-95 cursor-pointer";
+        }
+
+        // 4. Soal Berikutnya / Selesai
+        function soalBerikutnya() {
+            indeksSoal++;
+            if (indeksSoal < bankSoal.length) {
+                tampilkanSoal();
+            } else {
+                tampilkanHasilAkhir();
+            }
+        }
+
+        // 5. Tampilkan Hasil Akhir & Sertifikat
+        function tampilkanHasilAkhir() {
+            document.getElementById('screenKuis').classList.add('hidden');
+            document.getElementById('screenHasil').classList.remove('hidden');
+
+            document.getElementById('hasilNama').innerText = namaSiswa;
+            document.getElementById('hasilKelas').innerText = kelasSiswa;
+            
+            const nilaiAkhir = skor;
+            document.getElementById('hasilNilai').innerText = nilaiAkhir;
+
+            const jumlahBenar = skor / 10;
+            document.getElementById('hasilBenar').innerText = `${jumlahBenar} / 10`;
+
+            // Bintang & Pesan Motivasi
+            const starContainer = document.getElementById('starContainer');
+            const pesanMotivasi = document.getElementById('pesanMotivasi');
+
+            if (nilaiAkhir === 100) {
+                starContainer.innerText = "⭐⭐⭐⭐⭐";
+                pesanMotivasi.innerText = "🎉 Masya Allah! Sempurna! Kamu sangat memahami materi puasa Ramadan!";
+                speakText("Masya Allah! Nilai kamu sempurna seratus!");
+            } else if (nilaiAkhir >= 80) {
+                starContainer.innerText = "⭐⭐⭐⭐☆";
+                pesanMotivasi.innerText = "👏 Hebat Sekali! Hasil belajar kamu sangat bagus!";
+                speakText("Hebat sekali! Hasil kuis kamu sangat bagus!");
+            } else if (nilaiAkhir >= 60) {
+                starContainer.innerText = "⭐⭐⭐☆☆";
+                pesanMotivasi.innerText = "👍 Cukup Bagus! Tingkatkan lagi belajar materi puasanya ya!";
+                speakText("Cukup bagus! Tetap semangat belajar ya!");
+            } else {
+                starContainer.innerText = "⭐⭐☆☆☆";
+                pesanMotivasi.innerText = "💪 Jangan berkecil hati. Yuk baca lagi materi puasa dan coba kuis lagi!";
+                speakText("Tetap semangat! Coba kuis sekali lagi ya!");
+            }
+
+            // Pesta Confetti Besar jika nilai bagus
+            if (nilaiAkhir >= 70 && typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+            }
+
+            // Render Pembahasan Soal
+            const reviewList = document.getElementById('reviewList');
+            reviewList.innerHTML = "";
+
+            riwayatJawaban.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `p-3 rounded-xl border ${item.isBenar ? 'bg-emerald-50/60 border-emerald-200' : 'bg-rose-50/60 border-rose-200'}`;
+                
+                itemDiv.innerHTML = `
+                    <div class="font-bold text-slate-800 mb-1">
+                        ${index + 1}. ${item.soal}
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="${item.isBenar ? 'text-emerald-700' : 'text-rose-700'} font-semibold">
+                            Jawaban kamu: ${item.jawabanSiswa} ${item.isBenar ? '✓' : '✗'}
+                        </span>
+                    </div>
+                    ${!item.isBenar ? `<div class="text-emerald-800 font-medium mt-1">Kunci Jawaban: ${item.jawabanBenar}</div>` : ''}
+                `;
+                reviewList.appendChild(itemDiv);
+            });
+        }
+
+        // 6. Ulang Kuis
+        function ulangKuis() {
+            document.getElementById('screenHasil').classList.add('hidden');
+            document.getElementById('screenIdentitas').classList.remove('hidden');
+        }
+
+        // 7. Cetak / Simpan PDF
+        function cetakHasil() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
+```eof
+
+### Fitur Kuis Interaktif PAI Kelas 3:
+1. **Identitas Siswa:** Kolom pengisian *Nama Lengkap* dan pilihan *Kelas 3*.
+2. **Materi Lengkap Kurikulum SD Kelas 3:**
+   - Pengertian Puasa secara Bahasa (*Shaum* = menahan diri).
+   - Pengertian Puasa secara Istilah.
+   - Syarat Wajib Puasa (Berakal sehat, baligh/mumayyiz, dll).
+   - Rukun Puasa (Niat & Menahan diri).
+   - Hal yang Membatalkan Puasa (Makan/minum sengaja vs Lupa).
+   - Hikmah Puasa (Melatih kesabaran, kejujuran, & kepedulian sosial).
+3. **Fitur Audio Interaktif:**
+   - **Tepuk Tangan & Suara "Yey, benar !!!"** menggunakan sintesis suara (Web Audio API & Web Speech API) jika jawaban benar.
+   - **Suara Buzzer & Ucapan "Salah!"** jika jawaban salah.
+   - Tombol toggle untuk mengaktifkan/mematikan suara.
+4. **Hasil Akhir & Laporan Belajar:** Nilai otomatis (0–100), rating bintang, motivasi, pembahasan soal, serta tombol untuk cetak/simpan PDF hasil kuis.
